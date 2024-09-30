@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="image/iWebApps.png" type="image/x-icon">
+    <title>Tes Psikologi - iWebApps</title>
+    <!-- Memuat Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Gaya umum */
+        body {
+            background-color: #f7f7f7;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #007bff;
+        }
+
+        .navbar-brand {
+            color: white;
+        }
+
+        a {
+            color: #80eaff;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            margin-top: 20px;
+            font-size: 0.8rem;
+        }
+
+        /* Kotak hasil */
+        #resultText {
+            font-size: 1.5rem;
+            color: #0081ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        /* Responsif */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            #resultText {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand" href="#">Simpel Tes Psikologi (STP)</a>
+    </nav>
+
+    <!-- Konten Utama -->
+    <div class="container mt-5">
+        <h5 class="alert alert-info">Jawab pertanyaan berikut dan dapatkan hasil tes psikologi mu!</h5>
+        <form id="psychTest" class="mt-4">
+            <!-- Pertanyaan 1 -->
+            <div class="form-group">
+                <label for="q1">1. Apa yang biasanya kamu lakukan saat bangun pagi?</label>
+                <select class="form-control" id="q1" required>
+                    <option value="" disabled selected>Pilih jawaban</option>
+                    <option value="1">Langsung scroll media sosial</option>
+                    <option value="2">Cek notifikasi dan balas chat</option>
+                    <option value="3">Lanjut tidur lagi</option>
+                    <option value="4">Minum kopi atau teh dulu</option>
+                    <option value="5">Olahraga ringan</option>
+                </select>
+            </div>
+            <!-- Pertanyaan 2 -->
+            <div class="form-group">
+                <label for="q2">2. Saat sedang bosan, apa yang sering kamu lakukan?</label>
+                <select class="form-control" id="q2" required>
+                    <option value="" disabled selected>Pilih jawaban</option>
+                    <option value="1">Scroll TikTok atau Instagram</option>
+                    <option value="2">Nonton drama atau film di Netflix</option>
+                    <option value="3">Main game online</option>
+                    <option value="4">Chat dengan teman-teman</option>
+                    <option value="5">Tidur biar waktu cepat berlalu</option>
+                </select>
+            </div>
+            <!-- Pertanyaan 3 -->
+            <div class="form-group">
+                <label for="q3">3. Bagaimana kamu mengatasi stress?</label>
+                <select class="form-control" id="q3" required>
+                    <option value="" disabled selected>Pilih jawaban</option>
+                    <option value="1">Curhat ke teman atau keluarga</option>
+                    <option value="2">Dengerin musik sambil rebahan</option>
+                    <option value="3">Pergi jalan-jalan ke luar</option>
+                    <option value="4">Makan makanan favorit</option>
+                    <option value="5">Menunda masalah dan pura-pura semuanya baik-baik saja</option>
+                </select>
+            </div>
+            <!-- Pertanyaan 4 -->
+            <div class="form-group">
+                <label for="q4">4. Apa yang kamu lakukan saat punya waktu luang?</label>
+                <select class="form-control" id="q4" required>
+                    <option value="" disabled selected>Pilih jawaban</option>
+                    <option value="1">Belajar hal baru (coding, desain, dll.)</option>
+                    <option value="2">Maraton film atau serial</option>
+                    <option value="3">Pergi nongkrong dengan teman</option>
+                    <option value="4">Menghabiskan waktu di media sosial</option>
+                    <option value="5">Tidur atau bermalas-malasan</option>
+                </select>
+            </div>
+            <!-- Pertanyaan 5 -->
+            <div class="form-group">
+                <label for="q5">5. Bagaimana kamu melihat masa depan?</label>
+                <select class="form-control" id="q5" required>
+                    <option value="" disabled selected>Pilih jawaban</option>
+                    <option value="1">Optimis, semuanya akan baik-baik saja</option>
+                    <option value="2">Sedikit khawatir tapi tetap semangat</option>
+                    <option value="3">Bingung, belum ada rencana jelas</option>
+                    <option value="4">Santai saja, jalani saja dulu</option>
+                    <option value="5">Khawatir, tapi berharap ada keajaiban</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Kirim Jawaban</button>
+        </form>
+</br>        
+        <!-- Hasil Tes -->
+        <div class="alert alert-info" role="alert">
+  Hasil Tes Psikologi
+        <div id="resultText" class="text-center"></div>
+        </div>
+
+        <!-- Chart Hasil -->
+        <div class="alert alert-info" role="alert">
+  Persentase Psikologi
+        <div class="mt-5">
+            <canvas id="resultChart"></canvas>
+        </div>
+        </div>
+
+        <!-- Tombol Mulai Ulang -->
+        <button id="restartButton" class="btn btn-info btn-block mt-3" style="display:none;">Mulai Ulang Tes</button>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <small>&copy; 2024 Simpel Tes Psikologi v1.0 - Developed by <a href="https://instagram.com/ibad.qr">Ibad QR</a>.</small>
+    </footer>
+
+    <!-- Memuat Chart.js dan Script Kustom -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let chart;
+
+        document.getElementById("psychTest").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            // Mengambil nilai dari form
+            const q1 = document.getElementById("q1").value;
+            const q2 = document.getElementById("q2").value;
+            const q3 = document.getElementById("q3").value;
+            const q4 = document.getElementById("q4").value;
+            const q5 = document.getElementById("q5").value;
+
+            // Validasi: Jika ada jawaban yang belum dipilih
+            if (!q1 || !q2 || !q3 || !q4 || !q5) {
+                alert("Silakan jawab semua pertanyaan!");
+                return;
+            }
+
+            // Kalkulasi hasil
+            const totalScore = parseInt(q1) + parseInt(q2) + parseInt(q3) + parseInt(q4) + parseInt(q5);
+
+            let resultText = "";
+            if (totalScore <= 7) {
+                resultText = "Kamu butuh liburan dan lebih banyak tidur!";
+            } else if (totalScore <= 12) {
+                resultText = "Hidupmu sedikit berantakan, tapi tetap semangat ya!";
+            } else if (totalScore <= 17) {
+                resultText = "Kamu punya potensi besar, jangan berhenti bermimpi!";
+            } else {
+                resultText = "Kamu adalah master dalam menjalani hidup dengan santai dan penuh kreativitas!";
+            }
+
+            // Tampilkan hasil dalam kotak hijau
+            const resultDiv = document.getElementById("resultText");
+            resultDiv.innerText = resultText;
+            resultDiv.style.display = 'block';
+
+            // Matikan semua pilihan
+            document.querySelectorAll('select').forEach(select => {
+                select.disabled = true;
+            });
+
+            // Matikan tombol submit
+            document.querySelector('button[type="submit"]').disabled = true;
+
+            // Hapus chart sebelumnya jika ada
+            if (chart) {
+                chart.destroy();
+            }
+
+            // Membuat data chart
+            const ctx = document.getElementById('resultChart').getContext('2d');
+            const randomData = Array.from({ length: 5 }, () => Math.floor(Math.random() * 100) + 1);
+
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Produktivitas', 'Stress', 'Kreativitas', 'Santai', 'Kebahagiaan'],
+                    datasets: [{
+                        label: 'Tingkat Kamu (%)',
+                        data: randomData,
+                        backgroundColor: ['#007bff', '#dc3545', '#28a745', '#ffc107', '#17a2b8']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Tampilkan tombol mulai ulang
+            document.getElementById("restartButton").style.display = 'block';
+        });
+
+        // Fungsi untuk tombol "Mulai Ulang"
+        document.getElementById("restartButton").addEventListener("click", function() {
+            // Reset form
+            document.getElementById("psychTest").reset();
+
+            // Aktifkan kembali pilihan dan tombol submit
+            document.querySelectorAll('select').forEach(select => {
+                select.disabled = false;
+            });
+            document.querySelector('button[type="submit"]').disabled = false;
+
+            // Sembunyikan hasil dan chart
+            document.getElementById("resultText").style.display = 'none';
+            chart.destroy();
+
+            // Sembunyikan tombol "Mulai Ulang"
+            document.getElementById("restartButton").style.display = 'none';
+        });
+    </script>
+</body>
+</html>
