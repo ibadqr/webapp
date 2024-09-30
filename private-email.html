@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="iWebApps.png" type="image/x-icon">
+    <title>Private Email - iWebApps</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <!-- Custom Styles untuk tema klasik elegan -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .navbar {
+            background-color: #ffb22b;
+        }
+
+        .navbar-brand {
+            font-family: 'Georgia', serif;
+            color: #ffffff;
+            font-size: 1.5rem;
+        }
+
+        .form-label {
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+        }
+
+        footer {
+            background-color: #ffb22b;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+
+        #result {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #caffaa;
+        }
+        
+        #label, #reload {
+            color: #ffb22b;
+        }
+        
+    </style>
+
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init("fcVdJuGDfEe5Phbdg"); // Ganti dengan user ID Anda dari EmailJS
+        })();
+    </script>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Private Email App</a>
+        </div>
+    </nav>
+
+    <!-- Form untuk pengiriman pesan -->
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div id="result" class="mt-4"></div>
+                        <h2 class="card-title text-center mb-4" id="label">Kirim Pesan Email Privasi</h2>
+                        <div class="alert alert-warning">Aplikasi ini bertujuan untuk mengirimkan pesan email ke seseorang tanpa harus menggunakan email pribadi anda, jika anda tidak ingin si penerima tahu identitas asli anda.</div>
+                        <form id="emailForm">
+                            <!-- Input Nama Samaran -->
+                            <div class="mb-3">
+                                <label for="alias" class="form-label" id="label">Nama Anda (alias)</label>
+                                <input type="text" id="alias" class="form-control" required>
+                            </div>
+
+                            <!-- Input Nama Penerima -->
+                            <div class="mb-3">
+                                <label for="recipientName" class="form-label" id="label">Nama Penerima</label>
+                                <input type="text" id="recipientName" class="form-control" required>
+                            </div>
+
+                            <!-- Input Email Tujuan -->
+                            <div class="mb-3">
+                                <label for="email" class="form-label" id="label">Email Tujuan</label>
+                                <input type="email" id="email" class="form-control" required>
+                            </div>
+
+                            <!-- Input Pesan -->
+                            <div class="mb-3">
+                                <label for="message" class="form-label" id="label">Pesan</label>
+                                <textarea id="message" class="form-control" rows="4" required></textarea>
+                            </div>
+
+                            <!-- Tombol Kirim -->
+                            <div class="text-center">
+                            <button type="submit" class="btn btn-warning"><i class="bi bi-send"></i> Kirim Pesan</button>
+                            <button type="reset" class="btn btn-light" id="reload"><i class="bi bi-arrow-repeat"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <small>&copy; 2024 Private Email App v1.0 - Developed by <a href="https://instagram.com/ibad.qr/">Ibad QR</a>.</small>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- EmailJS Logic -->
+    <script>
+        document.getElementById('emailForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            let alias = document.getElementById('alias').value;
+            let recipientName = document.getElementById('recipientName').value;
+            let email = document.getElementById('email').value;
+            let message = document.getElementById('message').value;
+
+            // Kirim data ke EmailJS
+            emailjs.send("service_ml31frc", "template_09cwgb5", {
+                to_email: email,
+                alias: alias,
+                recipientName: recipientName,
+                message: message
+            })
+            .then(function(response) {
+                showAlert('Pesan berhasil dikirim!', 'success');
+                // Reset form setelah sukses
+                document.getElementById('emailForm').reset();
+            }, function(error) {
+                showAlert(`Error: ${error.text}`, 'danger');
+            });
+        });
+
+        function showAlert(message, type) {
+            const alertPlaceholder = document.getElementById('result');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-dismissible fade show`;
+            alert.role = 'alert';
+            alert.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            alertPlaceholder.appendChild(alert);
+
+            // Hilangkan alert otomatis setelah 5 detik
+            setTimeout(() => {
+                if (alert) {
+                    alert.classList.remove('show');
+                }
+            }, 5000);
+        }
+    </script>
+
+</body>
+</html>
