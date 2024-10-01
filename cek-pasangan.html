@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="Pasangan.png" type="image/x-icon">
+    <title>Cek Pasangan - iWebApps</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+    font-family: poppins;
+    background-color: #121212;
+    color: #ffffff;
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+    background: linear-gradient(-45deg, #000000, #FFD700, #FF0000, #0000FF);
+    background-size: 400% 400%;
+    animation: gradientAnimation 10s ease infinite;
+}
+
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.container {
+    background-color: rgba(30, 30, 30, 0.8);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+    transition: opacity 0.5s, visibility 0.5s;
+}
+
+.container.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+h1 {
+    margin-bottom: 20px;
+    font-size: 2em;
+    color: #ffcc00;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+input[type="text"], input[type="radio"] {
+    padding: 15px;
+    font-family: poppins;
+    width: calc(100% - 30px);
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    background-color: rgba(30, 30, 30, 0.8);
+    color: #ffffff;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.error-message {
+    color: #ff5722;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+    display: none;
+}
+
+.gender-selection {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.gender-selection input[type="radio"] {
+    display: none;
+}
+
+.gender-selection label {
+    cursor: pointer;
+    padding: 10px 20px;
+    background-color: #2a2a2a;
+    border-radius: 5px;
+    font-size: 1em;
+    color: #ffffff;
+    margin: 0 10px;
+    transition: background-color 0.3s, transform 0.3s;
+    flex: 1;
+    text-align: center;
+}
+
+.gender-selection input[type="radio"]:checked + label {
+    background-color: #ff5722;
+    color: #ffffff;
+    transform: scale(1.1);
+}
+
+button {
+    padding: 15px 25px;
+    font-family: poppins;
+    background-color: #ff5722;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    width: calc(100% - 30px);
+    max-width: 200px;
+}
+
+button:hover {
+    background-color: #e64a19;
+    transform: scale(1.05);
+}
+
+.result-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s;
+    z-index: 999;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.result-container.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+.result-box {
+    background-color: rgba(30, 30, 30, 0.8);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
+}
+
+#result {
+    font-size: 1em;
+    color: #ffcc00;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+#jodoh-name {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #ffcc00;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+a {
+    text-decoration: none;
+    color: #ffcc00;
+}
+
+footer {
+    background-color: rgba(20, 20, 20, 0.5);
+    color: #ffffff;
+    padding: 10px 0;
+    width: 100%;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.footer-content p {
+    margin: 5px 0;
+    font-size: 0.8rem;
+}
+
+@media (max-width: 600px) {
+    .container, .result-box {
+        width: 90%;
+        padding: 20px;
+    }
+
+    button {
+        width: calc(100% - 30px);
+        max-width: none;
+    }
+
+    .gender-selection label {
+        flex: 1;
+    }
+}
+
+/* Animasi Hati */
+.love-animation {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.heart {
+    position: absolute;
+    bottom: 0; /* Awal dari bagian bawah kotak hasil */
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 20px;
+    height: 20px;
+    background-color: #ff0000;
+    animation: love 5s linear infinite;
+}
+
+.heart::before, .heart::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: #ff0000;
+    border-radius: 50%;
+}
+
+.heart::before {
+    top: -10px;
+    left: 0;
+}
+
+.heart::after {
+    top: 0;
+    left: -10px;
+}
+
+@keyframes love {
+    0% {
+        transform: translateY(0) rotate(45deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100vh) rotate(45deg);
+        opacity: 0;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="container" id="main-container">
+        <h1>CEK PASANGAN</h1>
+        <p>Penasaran siapa nama pasangan yang cocok buat kamu?</p>
+        <p>Langsung aja cek disini.</p>
+        <form id="jodohForm">
+            <input type="text" id="yourName" placeholder="Masukkan nama kamu">
+            <small class="error-message" id="nameError"></small>
+            <div class="gender-selection">
+                <input type="radio" id="male" name="gender" value="male">
+                <label for="male">Cowok</label>
+                <input type="radio" id="female" name="gender" value="female">
+                <label for="female">Cewek</label>
+            </div>
+            <small class="error-message" id="genderError"></small>
+            <button type="button" id="checkButton">Gass Cek !</button>
+        </form>
+    </div>
+
+    <div id="result-container" class="result-container">
+        <div class="result-box" id="result-box">
+            <div class="love-animation"></div>
+            <h1>HASIL CEK !</h1>
+            </br>
+            <div id="result" style="text-transform: uppercase;"></div>
+            <div id="jodoh-name"></div>
+            <br>
+            <p>Tunggu apalagi, namanya sudah kamu dapatkan, silahkan share ke sosial media dan jangan lupa tag mention si doi ☺️</p>
+            <button id="resetButton">Cek Ulang</button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 Cek Pasangan v1.0 - Developed by <a href="https://instagram.com/ibad.qr">Ibad QR</a>.</p>
+            <p><a href="index.html">Lihat Aplikasi Lainnya</a></p>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    const checkButton = document.getElementById('checkButton');
+    const resetButton = document.getElementById('resetButton');
+    const mainContainer = document.getElementById('main-container');
+    const resultContainer = document.getElementById('result-container');
+
+    checkButton.addEventListener('click', checkJodoh);
+    resetButton.addEventListener('click', resetForm);
+
+    function checkJodoh() {
+        const maleNames = [
+            "BUDI", "DONI", "FAJAR", "HADI", "INDRA", "JOKO", "KIKI", "OKA", "SANDI", "UDIN", "WAWAN", "ZAKI",
+            "ANDI", "BAGUS", "CAHYO", "DEDI", "EKO", "FAISAL", "GALIH", "HENDRA", "IMAM", "JONI", "KAMAL", "LUTFI",
+            "MAHDI", "NAUFAL", "IBAD", "PANDU", "QOMAR", "RIZKI", "SATRIA", "TAUFIK", "USMAN", "VITO", "WIRA", "YUSUF",
+            "ADI", "BAYU", "CIPTO", "DAMAR", "ERWIN", "FIKRI", "GILANG", "HAFIZ", "IRFAN", "JAKA", "KOMAR", "LEO",
+            "MIKO", "NIKO", "OGI", "PUTRA", "RAMA", "SETO", "TONI", "UJANG", "VICKY", "WIJAYA", "YANUAR", "ZAINAL",
+            "ALIF", "BAMBANG", "CANDRA", "DION", "EDI", "FARID", "GUNTUR", "HARUN", "IWAN", "JERRY", "KADIR", "LUKMAN",
+            "MAMAN", "NAZAR", "OPAN", "PUTU", "RENDI", "SOLEH", "TOMI", "UMAR", "VICKY", "WILLY", "YOGI", "ZULFIQAR"
+        ];
+
+        const femaleNames = [
+            "AYU", "CITRA", "EKA", "GITA", "LINA", "MIRA", "NINA", "PUTRI", "RINA", "TARI", "VINA", "YANI",
+            "ANA", "BELLA", "CICI", "DEWI", "ELI", "FANI", "GINA", "HANI", "IKA", "JULI", "KIKI", "LUSI",
+            "MAYA", "NOVI", "ONI", "PUSPITA", "RINI", "SARI", "TINI", "UMI", "VIVI", "WULAN", "YULI", "ZAHRA",
+            "ALYA", "BUNGA", "CINDY", "DESI", "ELLY", "FIRA", "GISELLA", "HILDA", "INTAN", "JIHAN", "KARIN", "LIA",
+            "MEGA", "NADIA", "OLIVIA", "PRISCA", "RINA", "SHINTA", "TIA", "ULFAH", "VERA", "WIDYA", "YULIA", "ZARA",
+            "AMELIA", "BUNGA", "CLARA", "DIANA", "ELISA", "FIONA", "GRACE", "HELGA", "ISMA", "JESSICA", "KARINA", "LINDA",
+            "MELANI", "NANDA", "OLGA", "PUTRI", "RIKA", "SINTA", "TANIA", "UTAMI", "VANESSA", "WANDA", "YANA", "ZELDA",
+            "ANITA", "BELLA", "CARLA", "DINA", "ELSA", "FRIDA", "GITA", "HANA", "INDAH", "JASMINE", "KARLA", "LILI",
+            "MILA", "NINA", "OLIA", "PRISKA", "RANI", "SISKA", "TIKA", "UCI", "VERA", "WINDA", "YUNI", "ZILA"
+        ];
+
+        const yourName = document.getElementById('yourName').value.trim();
+        const yourGender = document.querySelector('input[name="gender"]:checked');
+        const nameError = document.getElementById('nameError');
+        const genderError = document.getElementById('genderError');
+
+        let isValid = true;
+
+        if (!yourName) {
+            nameError.textContent = "Nama harus diisi!";
+            nameError.style.display = "block";
+            isValid = false;
+        } else {
+            nameError.style.display = "none";
+        }
+
+        if (!yourGender) {
+            genderError.textContent = "Jenis kelamin harus dipilih!";
+            genderError.style.display = "block";
+            isValid = false;
+        } else {
+            genderError.style.display = "none";
+        }
+
+        if (!isValid) {
+            return;
+        }
+
+        const jodohNames = yourGender.value === 'male' ? femaleNames : maleNames;
+        const randomIndex = Math.floor(Math.random() * jodohNames.length);
+        const jodohName = jodohNames[randomIndex];
+
+        displayResult(yourName, jodohName);
+        
+        startLoveAnimation();
+    }
+
+    function displayResult(yourName, jodohName) {
+        const resultDiv = document.getElementById('result');
+        const jodohNameDiv = document.getElementById('jodoh-name');
+
+        resultDiv.textContent = `Pasangan yang cocok sama ${yourName} itu:`;
+        jodohNameDiv.textContent = jodohName;
+
+        mainContainer.classList.add('hidden');
+        resultContainer.classList.add('show');
+    }
+
+    function resetForm() {
+        const yourNameInput = document.getElementById('yourName');
+        const genderRadios = document.querySelectorAll('input[name="gender"]');
+        const nameError = document.getElementById('nameError');
+        const genderError = document.getElementById('genderError');
+
+        yourNameInput.value = "";
+        genderRadios.forEach(radio => radio.checked = false);
+        nameError.style.display = "none";
+        genderError.style.display = "none";
+        
+        mainContainer.classList.remove('hidden');
+        resultContainer.classList.remove('show');
+       
+        stopLoveAnimation();
+    }
+    
+    function startLoveAnimation() {
+        const loveContainer = document.querySelector('.love-animation');
+        loveContainer.style.display = 'block';
+
+        const createHeart = () => {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 2 + 3 + 's';
+            loveContainer.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        };
+
+        loveInterval = setInterval(createHeart, 300);
+    }
+
+    function stopLoveAnimation() {
+        clearInterval(loveInterval);
+        const loveContainer = document.querySelector('.love-animation');
+        loveContainer.style.display = 'none';
+        while (loveContainer.firstChild) {
+            loveContainer.removeChild(loveContainer.firstChild);
+        }
+    }
+
+    let loveInterval;
+
+});
+    </script>
+</body>
+  </html>
