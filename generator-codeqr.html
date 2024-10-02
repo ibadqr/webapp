@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="image/iWebApps.png" type="image/x-icon">
+  <title>Generator Code QR - iWebApps</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+      background-color: #f0f8ff;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .container {
+      margin-top: 50px;
+      max-width: 600px;
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    #qrcode {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 3px solid #007bff;
+      width: 280px;
+      height: 280px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn-download {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .btn-download i {
+      margin-right: 8px;
+    }
+
+    .footer {
+      background-color: #f8f9fa;
+      text-align: center;
+      padding: 10px;
+      width: 100%;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 576px) {
+      .container {
+        max-width: 90%;
+      }
+    }
+    
+    a {
+        text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center mb-4">Generator</br>Link menjadi Code QR</h1>
+    <div class="form-group mb-3">
+      <label for="urlInput" class="form-label">Masukkan Link URL:</label>
+      <input type="text" id="urlInput" class="form-control" placeholder="https://ibdigital.biz.id">
+    </div>
+    <button id="generateBtn" class="btn btn-primary w-100"><i class="fas fa-robot"></i> Buat Code QR</button>
+
+    <div id="qrcode">Code QR Anda akan muncul disini!</div>
+
+    <!-- Button download -->
+    <a id="downloadBtn" class="btn btn-success w-100 btn-download" download="qrcode.png">
+      <i class="fas fa-download"></i> Download Code QR 
+    </a>
+  </div>
+
+  <!-- Footer fixed -->
+  <footer class="footer">
+    &copy; 2024 Generator Code QR - Developed by <a href="https://instagram.com/ibad.qr">Ibad QR</a>.
+  </footer>
+
+  <!-- QRCode.js library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+      document.getElementById('generateBtn').addEventListener('click', function () {
+  var url = document.getElementById('urlInput').value;
+
+  // Regular expression to validate URLs
+  var urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+
+  // Validate URL input
+  if (!urlPattern.test(url)) {
+    alert("Silahkan masukkan Link URL dengan benar (contoh: https://ibdigital.biz.id)");
+    return;
+  }
+
+  // Clear previous QR code
+  var qrcodeContainer = document.getElementById('qrcode');
+  qrcodeContainer.innerHTML = "";
+
+  // Generate QR code
+  var qrCode = new QRCode(qrcodeContainer, {
+    text: url,
+    width: 256,
+    height: 256
+  });
+
+  // Show the download button after QR code is generated
+  setTimeout(function() {
+    var qrCodeCanvas = qrcodeContainer.querySelector('canvas');
+    var downloadBtn = document.getElementById('downloadBtn');
+
+    // Convert canvas to Data URL for download
+    downloadBtn.href = qrCodeCanvas.toDataURL('image/png');
+
+    // Ensure the download button is visible after generation
+    downloadBtn.style.display = 'block';
+  }, 500); // Wait for QR code to be generated
+});
+  </script>
+</body>
+</html>
