@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="image/iWebApps.png" type="image/x-icon">
+    <title>Catatan Belanja - iWebApps</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            padding-bottom: 50px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: auto;
+        }
+        #receipt {
+            margin-top: 20px;
+            display: none;
+            border: 1px solid #007bff;
+            padding: 5px;
+            border-radius: 5px;
+            width: auto; /* Sesuaikan lebar struk */
+        }
+        #receipt h3 {
+            text-align: center;
+            font-size: 1rem; /* Ukuran font judul struk */
+        }
+        table {
+            width: 100%;
+            margin-top: 10px;
+            font-size: 0.6rem; /* Ukuran font lebih kecil */
+            border-collapse: collapse; /* Menghilangkan jarak antara garis tabel */
+        }
+        th, td {
+            text-align: left;
+            padding: 1px; /* Padding yang lebih kecil */
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        #totalAmount {
+            font-weight: bold;
+            font-style: italic;
+            margin-top: 10px;
+            text-align: right;
+            font-size: 1rem;
+        }
+        #downloadReceipt, #shareReceipt {
+            margin-top: 20px;
+        }
+        
+        .footer {
+      background-color: #f8f9fa;
+      text-align: center;
+      padding: 10px;
+      width: 100%;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      font-size: 0.8rem;
+    }
+    
+    a {
+        text-decoration: none;
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center">Catatan Belanja</h2>
+        <form id="shoppingForm">
+            <div class="form-group">
+                <label for="itemName">Nama Barang:</label>
+                <input type="text" class="form-control" id="itemName" placeholder="Masukkan nama barang" required>
+            </div>
+            <div class="form-group">
+                <label for="itemQuantity">Jumlah:</label>
+                <input type="number" class="form-control" id="itemQuantity" placeholder="Masukkan jumlah" required>
+            </div>
+            <div class="form-group">
+                <label for="itemUnit">Satuan:</label>
+                <select class="form-control" id="itemUnit" required>
+                    <option value="pcs">pcs</option>
+                    <option value="lusin">lusin</option>
+                    <option value="kg">kg</option>
+                    <option value="liter">liter</option>
+                    <option value="box">box</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="itemPrice">Harga:</label>
+                <input type="number" class="form-control" id="itemPrice" placeholder="Masukkan harga" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Tambah</button>
+        </form>
+
+        <h4 class="mt-4">Daftar Belanja</h4>
+        <ul id="shoppingList" class="list-group"></ul>
+
+        <div id="receipt">
+            <h3>Struk Belanja</h3>
+            <table id="receiptTable" class="table">
+                <thead>
+                    <tr>
+                        <th>Belanjaan</th>
+                        <th>Jumlah</th>
+                        <th>Satuan</th>
+                        <th>Harga</th>
+                    </tr>
+                </thead>
+                <tbody id="receiptItems"></tbody>
+            </table>
+            <div id="totalAmount"></div>
+        </div>
+        <button id="downloadReceipt" class="btn btn-success btn-block">Download Struk</button>
+        <button id="shareReceipt" class="btn btn-info btn-block">Share ke WhatsApp</button>
+    </div>
+    <footer class="footer">
+    &copy; 2024 Catatan Belanja v1.0- Developed by <a href="https://instagram.com/ibad.qr">Ibad QR</a>.
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        let shoppingItems = [];
+
+        document.getElementById('shoppingForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const itemName = document.getElementById('itemName').value;
+            const itemQuantity = parseInt(document.getElementById('itemQuantity').value);
+            const itemUnit = document.getElementById('itemUnit').value;
+            const itemPrice = parseFloat(document.getElementById('itemPrice').value);
+
+            shoppingItems.push({ name: itemName, quantity: itemQuantity, unit: itemUnit, price: itemPrice });
+            renderShoppingList();
+            this.reset();
+        });
+
+        function renderShoppingList() {
+            const shoppingList = document.getElementById('shoppingList');
+            shoppingList.innerHTML = '';
+            shoppingItems.forEach((item, index) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+                listItem.innerHTML = `${item.name} - ${item.quantity} ${item.unit} - Rp ${item.price.toLocaleString('id-ID', { style: 'decimal', minimumFractionDigits: 2 })} 
+                    <div>
+                        <button class="btn btn-sm btn-warning" onclick="editItem(${index})"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteItem(${index})"><i class="fas fa-trash"></i></button>
+                    </div>`;
+                shoppingList.appendChild(listItem);
+            });
+            updateReceipt();
+        }
+
+        function editItem(index) {
+            const item = shoppingItems[index];
+            document.getElementById('itemName').value = item.name;
+            document.getElementById('itemQuantity').value = item.quantity;
+            document.getElementById('itemUnit').value = item.unit;
+            document.getElementById('itemPrice').value = item.price;
+            deleteItem(index);
+        }
+
+        function deleteItem(index) {
+            shoppingItems.splice(index, 1);
+            renderShoppingList();
+        }
+
+        function updateReceipt() {
+            const receipt = document.getElementById('receipt');
+            const receiptItems = document.getElementById('receiptItems');
+            receiptItems.innerHTML = '';
+            let total = 0;
+
+            shoppingItems.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${item.name}</td>
+                                <td>${item.quantity}</td>
+                                <td>${item.unit}</td>
+                                <td>Rp ${item.price.toLocaleString('id-ID', { style: 'decimal', minimumFractionDigits: 2 })}</td>`;
+                receiptItems.appendChild(row);
+                total += item.price;
+            });
+
+            const totalItem = document.createElement('div');
+            totalItem.innerHTML = `Total: Rp ${total.toLocaleString('id-ID', { style: 'decimal', minimumFractionDigits: 2 })}`;
+            totalItem.id = "total";
+            totalItem.className = "font-weight-bold font-italic";
+            document.getElementById('totalAmount').innerHTML = totalItem.outerHTML;
+
+            if (shoppingItems.length > 0) {
+                receipt.style.display = 'block';
+            } else {
+                receipt.style.display = 'none';
+            }
+        }
+
+        document.getElementById('downloadReceipt').addEventListener('click', function() {
+            html2canvas(document.getElementById('receipt')).then(function(canvas) {
+                const link = document.createElement('a');
+                link.download = 'struk_belanja.png';
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            }).catch(function(error) {
+                console.error("Error capturing receipt:", error);
+            });
+        });
+
+        document.getElementById('shareReceipt').addEventListener('click', function() {
+            html2canvas(document.getElementById('receipt')).then(function(canvas) {
+                const imageData = canvas.toDataURL("image/png");
+                const whatsappUrl = `https://api.whatsapp.com/send?text=Struk%20Belanja%0A${encodeURIComponent(document.getElementById('receipt').innerText)}%0A%0A${imageData}`;
+                window.open(whatsappUrl, '_blank');
+            }).catch(function(error) {
+                console.error("Error sharing receipt:", error);
+            });
+        });
+    </script>
+</body>
+  </html>
