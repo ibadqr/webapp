@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Manzila</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #333; /* Background gelap */
+            color: white;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .cake-icon {
+            width: 150px;
+            animation: pulse 1.5s infinite;
+            margin: 20px 0; /* Jarak antara kue dan teks */
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .birthday-message {
+            font-size: 2.5em;
+            text-shadow: 0 0 10px #ff4500; /* Efek bersinar */
+            margin-bottom: 20px; /* Jarak antara ucapan dan kue */
+        }
+
+        h1 {
+            text-shadow: 0 0 10px #ff4500; /* Efek bersinar pada nama */
+            margin: 10px 0; /* Jarak antara nama dan tanggal */
+        }
+
+        .date {
+            font-size: 1.2em;
+            color: #ccc;
+            text-shadow: 0 0 10px #ff4500; /* Efek bersinar pada tanggal */
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            padding: 30px;
+            border-radius: 10px;
+            background-color: #444; /* Warna latar belakang modal */
+        }
+
+        .modal-header {
+            border-bottom: none;
+        }
+
+        .modal-title {
+            font-weight: bold;
+            color: #ff4500; /* Warna judul modal */
+        }
+
+        /* Footer Styles */
+        footer {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.8em;
+            color: #ccc;
+        }
+
+        /* Form Styles */
+        .form-control {
+            border-radius: 5px; /* Sudut yang lebih lembut */
+        }
+        
+        .btn-primary {
+            background-color: #ff4500; /* Warna tombol */
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #e63900; /* Warna tombol saat hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="birthday-message">Selamat Ulang Tahun!</div>
+    <img src="https://img.icons8.com/color/144/000000/birthday-cake.png" alt="Kue Ulang Tahun" class="cake-icon">
+    <h1>Manzilatul Mukhoyyaroh</h1>
+    <div class="date">09 Oktober 2024</div>
+    <button class="btn btn-primary mt-4" data-toggle="modal" data-target="#birthdayModal">Buat Ucapan!</button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="birthdayModal" tabindex="-1" role="dialog" aria-labelledby="birthdayModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="birthdayModalLabel">Kirim Ucapan!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="birthdayForm">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="instagram" placeholder="username Instagrammu tanpa '@'" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea class="form-control" id="message" rows="3" placeholder="Tuliskan ucapanmu di sini..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Kirim</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2024 Special for <a href="https://instagram.com/manzila_9">Manzila</a> - Created By <a href="https://instagram.com/ibad.qr">Ibad QR</a>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+</script>
+<script type="text/javascript">
+   (function(){
+      emailjs.init({
+        publicKey: "jwNQtCik2AXwfb0Af",
+      });
+   })();
+</script>
+<script> document.getElementById('instagram').addEventListener('input', function(event) {
+            this.value = this.value.toLowerCase(); // Ubah input menjadi huruf kecil
+        });
+        
+        document.getElementById('birthdayForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const instagram = document.getElementById('instagram').value;
+            const message = document.getElementById('message').value;
+
+            emailjs.send("service_72qyat4", "template_cfqzrra", {
+                instagram: instagram,
+                message: message
+            }).then(function(response) {
+                alert('Ucapan telah terkirim!'); // Pesan sukses
+                $('#birthdayModal').modal('hide'); // Tutup modal
+                document.getElementById('birthdayForm').reset(); // Reset form setelah pengiriman
+            }).catch(function(error) {
+                alert('Gagal mengirim ucapan, coba lagi. Error: ' + JSON.stringify(error)); // Pesan gagal
+            });
+        });
+    </script>
+</body>
+</html>
