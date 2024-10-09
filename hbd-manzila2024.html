@@ -117,6 +117,9 @@
                             <input type="text" class="form-control" id="instagram" placeholder="Tulis Instagram mu tanpa '@'" required>
                         </div>
                         <div class="form-group">
+                            <input type="email" class="form-control" id="email" placeholder="Tulis Email mu" required>
+                        </div>
+                        <div class="form-group">
                             <textarea class="form-control" id="message" rows="3" placeholder="Tuliskan ucapanmu di sini..." required></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary btn-block">Kirim</button>
@@ -142,14 +145,19 @@
       });
    })();
 </script>
-<script> document.getElementById('instagram').addEventListener('input', function(event) {
+<script> 
+    document.getElementById('instagram').addEventListener('input', function(event) {
             this.value = this.value.toLowerCase(); // Ubah input menjadi huruf kecil
+        });
+    document.getElementById('email').addEventListener('input', function(event) {
+            this.value = this.value.toLowerCase(); // Ubah input email menjadi huruf kecil
         });
         
         document.getElementById('birthdayForm').addEventListener('submit', function(event) {
             event.preventDefault();
 
             const instagram = document.getElementById('instagram').value;
+            const email = document.getElementById('email').value;
             const message = document.getElementById('message').value;
 
             emailjs.send("service_72qyat4", "template_cfqzrra", {
