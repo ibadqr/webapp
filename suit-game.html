@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="image/iWebApps.png" type="image/x-icon">
+  <title>Suit Game - iWebApps</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start; /* Pastikan tidak terlalu tinggi di awal */
+      height: 100vh;
+      background-color: #1e1e2f;
+      margin: 0;
+      padding: 20px;
+      color: white;
+    }
+
+    .game-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #282c34;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      max-width: 500px;
+      width: 100%;
+      margin-top: 20px; /* Tambahkan ruang di atas */
+    }
+
+    .header {
+      text-align: center;
+      font-size: 36px;
+      margin: 0 0 10px 0; /* Margin bawah untuk lebih banyak ruang */
+      color: #ffeb3b;
+    }
+
+    .instructions {
+      background-color: #444;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 16px;
+      text-align: center;
+      color: #ffeb3b;
+      margin-bottom: 20px;
+    }
+
+    .scoreboard {
+      display: flex;
+      justify-content: space-between;
+      background-color: #444;
+      border-radius: 10px;
+      padding: 10px 10px;
+      width: 100%;
+      font-size: 20px;
+      margin-bottom: 20px;
+      font-style: bold;
+    }
+
+    .result-box {
+      background-color: #444;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      margin-bottom: 20px;
+      width: 100%;
+    }
+
+    .choices {
+      display: flex;
+      justify-content: space-around;
+      background-color: #444;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      width: 100%;
+    }
+
+    .choice {
+      font-size: 23px;
+      background-color: #333;
+      color: white;
+      border: none;
+      padding: 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.2s;
+    }
+
+    .choice:active {
+      transform: scale(1.1);
+    }
+
+    .highlight {
+      background-color: #ffeb3b;
+      color: black;
+      font-weight: bold;
+      padding: 5px;
+      border-radius: 5px;
+    }
+
+    .game-over {
+      font-size: 28px;
+      color: #ffeb3b;
+    }
+
+    button:disabled {
+      background-color: #666;
+      cursor: not-allowed;
+    }
+
+    .play-again {
+      padding: 5px 20px;
+      font-size: 14px;
+      background-color: #ffeb3b;
+      color: black;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .play-again:hover {
+      background-color: #ffcd00;
+    }
+
+    /* Pop-up styles */
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .popup-content {
+      background-color: #282c34;
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      color: white;
+      max-width: 400px;
+      width: 90%;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        align-items: flex-start; /* Pastikan judul tidak terpotong di layar kecil */
+      }
+
+      .header {
+        font-size: 28px;
+        margin-top: 30px; /* Tambahkan lebih banyak ruang pada perangkat kecil */
+        margin-bottom: 30px; /* Sesuaikan jarak antara judul dan konten */
+      }
+
+      .instructions {
+        font-size: 14px;
+      }
+
+      .scoreboard {
+        font-size: 18px;
+      }
+
+      .choices {
+        flex-direction: column;
+      }
+
+      .choice {
+        margin: 10px 0;
+      }
+    }
+    
+    .dev {
+        font-size: 0.7rem;
+        color: grey;
+        width: 100%;
+        text-align: center;
+    }
+    
+    a {
+        text-decoration: none;
+        color: #af822cd8;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <h1 class="header">• SUIT GAME •</h1>
+    <div class="instructions">
+      <h3 style="text-decoration: underline;">Petunjuk Bermain</h3>
+      <p>Pilih Batu 🪨, Gunting ✂️, atau Kertas 📄 untuk bertanding melawan robot. Siapa yang menang 3 kali terlebih dahulu akan memenangkan permainan!</p>
+    </div>
+    <div class="scoreboard">
+      <div>Skor Anda: <span id="user-score">0</span></div>
+      <div>Skor Robot: <span id="computer-score">0</span></div>
+    </div>
+    <div class="result-box">
+      <h3 id="result-message">Record Pertandingan</h3>
+      <p>Suit Anda: <span id="user-choice"></span></p>
+      <p>Suit Robot: <span id="computer-choice"></span></p>
+    </div>
+    <div class="choices">
+      <h2 style="text-align: center;">Pilihan Suit Anda</h2>
+      <button class="choice" data-choice="batu">🪨 Batu</button>
+      <button class="choice" data-choice="gunting">✂️ Gunting</button>
+      <button class="choice" data-choice="kertas">📄 Kertas</button>
+    </div>
+    <p class="dev">&copy; 2024 Suit Game v1.0 - Developed by <a href="https://instagram.com/ibad.qr">Ibad QR</a>.</p>
+    <button class="play-again" style="display:none;" id="play-again">Main Lagi</button>
+  </div>
+
+  <!-- Pop-up for final result -->
+  <div class="popup" id="result-popup">
+    <div class="popup-content">
+      <h3 id="popup-message">Pesan Hasil</h3>
+      <button class="play-again" id="close-popup">Main Lagi</button>
+    </div>
+  </div>
+
+  <script>
+    let userScore = 0;
+    let computerScore = 0;
+    const winningScore = 3;
+    const choices = document.querySelectorAll('.choice');
+    const resultMessage = document.getElementById('result-message');
+    const userChoiceDisplay = document.getElementById('user-choice');
+    const computerChoiceDisplay = document.getElementById('computer-choice');
+    const userScoreDisplay = document.getElementById('user-score');
+    const computerScoreDisplay = document.getElementById('computer-score');
+    const playAgainButton = document.getElementById('play-again');
+    const popup = document.getElementById('result-popup');
+    const popupMessage = document.getElementById('popup-message');
+    const closePopupButton = document.getElementById('close-popup');
+
+    choices.forEach(choice => {
+      choice.addEventListener('click', () => {
+        const userChoice = choice.getAttribute('data-choice');
+        const computerChoice = getComputerChoice();
+        const result = getResult(userChoice, computerChoice);
+
+        userChoiceDisplay.textContent = userChoice;
+        computerChoiceDisplay.textContent = computerChoice;
+        resultMessage.textContent = result;
+
+        updateScore(result);
+        highlightChoices(userChoice, computerChoice);
+
+        if (userScore === winningScore || computerScore === winningScore) {
+          endGame();
+        }
+      });
+    });
+
+    function getComputerChoice() {
+      const choices = ['batu', 'gunting', 'kertas'];
+      const randomIndex = Math.floor(Math.random() * choices.length);
+      return choices[randomIndex];
+    }
+
+    function getResult(userChoice, computerChoice) {
+      if (userChoice === computerChoice) {
+        return 'Seri!';
+      } else if (
+        (userChoice === 'batu' && computerChoice === 'gunting') ||
+        (userChoice === 'gunting' && computerChoice === 'kertas') ||
+        (userChoice === 'kertas' && computerChoice === 'batu')
+      ) {
+        return 'Anda Menang!';
+      } else {
+        return 'Anda Kalah!';
+      }
+    }
+
+    function updateScore(result) {
+      if (result === 'Anda Menang!') {
+        userScore++;
+        userScoreDisplay.textContent = userScore;
+      } else if (result === 'Anda Kalah!') {
+        computerScore++;
+        computerScoreDisplay.textContent = computerScore;
+      }
+    }
+
+    function highlightChoices(userChoice, computerChoice) {
+      userChoiceDisplay.classList.add('highlight');
+      computerChoiceDisplay.classList.add('highlight');
+
+      setTimeout(() => {
+        userChoiceDisplay.classList.remove('highlight');
+        computerChoiceDisplay.classList.remove('highlight');
+      }, 500);
+    }
+
+    function endGame() {
+      const finalMessage = userScore === winningScore
+        ? '🏆 Selamat! Anda Menang! 🏆'
+        : '😢 Anda Kalah! 😢';
+
+      popupMessage.textContent = finalMessage; // Mengatur teks pop-up
+      popup.style.display = 'flex'; // Menampilkan pop-up
+      choices.forEach(choice => {
+        choice.disabled = true; // Menonaktifkan pilihan
+      });
+
+      resultMessage.classList.add('game-over'); // Menambahkan kelas untuk efek tampilan
+    }
+
+    playAgainButton.addEventListener('click', () => {
+      resetGame();
+    });
+
+    closePopupButton.addEventListener('click', () => {
+      resetGame();
+      popup.style.display = 'none'; // Menyembunyikan pop-up
+    });
+
+    function resetGame() {
+      userScore = 0;
+      computerScore = 0;
+      userScoreDisplay.textContent = userScore;
+      computerScoreDisplay.textContent = computerScore;
+      resultMessage.textContent = 'Record Pertandingan';
+      userChoiceDisplay.textContent = '';
+      computerChoiceDisplay.textContent = '';
+      choices.forEach(choice => {
+        choice.disabled = false; // Mengaktifkan kembali pilihan
+      });
+      playAgainButton.style.display = 'none'; // Menyembunyikan tombol main lagi
+      resultMessage.classList.remove('game-over'); // Menghapus kelas game-over
+    }
+  </script>
+</body>
+  </html>
